@@ -19,6 +19,7 @@ import {
 import { useTheme } from "@/components/theme/ThemeProvider";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import type { DateRange } from "@/lib/date-utils";
+import { useLocale } from "@/lib/i18n";
 import {
   Bell,
   Check,
@@ -93,58 +94,67 @@ const DEPLOYMENTS: DeploymentRow[] = [
   },
 ];
 
-const DEPLOY_COLUMNS: DataTableColumn<DeploymentRow>[] = [
-  { key: "service", header: "Servicio", sortable: true },
-  { key: "environment", header: "Entorno", sortable: true },
-  { key: "region", header: "Región", sortable: true },
-  {
-    key: "p95Ms",
-    header: "p95",
-    sortable: true,
-    align: "right",
-    render: (row) => <span className="font-mono text-xs">{row.p95Ms} ms</span>,
-  },
-  {
-    key: "status",
-    header: "Estado",
-    sortable: true,
-    render: (row) => (
-      <span
-        className={
-          row.status === "Healthy"
-            ? "inline-flex rounded-full bg-emerald-500/15 px-2 py-0.5 text-xs font-medium text-[var(--success)]"
-            : "inline-flex rounded-full bg-amber-500/15 px-2 py-0.5 text-xs font-medium text-[var(--warning)]"
-        }
-      >
-        {row.status}
-      </span>
-    ),
-  },
-];
-
-const ENV_OPTIONS = [
-  {
-    value: "all",
-    label: "Todos los entornos",
-    description: "Production + Staging",
-  },
-  {
-    value: "production",
-    label: "Production",
-    description: "Tráfico real de clientes",
-  },
-  {
-    value: "staging",
-    label: "Staging",
-    description: "Validación previa a release",
-  },
-];
-
 export function MiniDashboardShowcase(): React.ReactElement {
   const { presets, activePresetSlug, selectPreset, registerPreset } =
     useTheme();
   const { setOpen: setCommandOpen } = useGlobalCommandPalette();
   const { toast } = useToast();
+  const { t } = useLocale();
+
+  const deployColumns = React.useMemo<DataTableColumn<DeploymentRow>[]>(
+    () => [
+      { key: "service", header: t.showcase.colService, sortable: true },
+      { key: "environment", header: t.showcase.colEnvironment, sortable: true },
+      { key: "region", header: t.showcase.colRegion, sortable: true },
+      {
+        key: "p95Ms",
+        header: "p95",
+        sortable: true,
+        align: "right",
+        render: (row) => (
+          <span className="font-mono text-xs">{row.p95Ms} ms</span>
+        ),
+      },
+      {
+        key: "status",
+        header: t.showcase.colStatus,
+        sortable: true,
+        render: (row) => (
+          <span
+            className={
+              row.status === "Healthy"
+                ? "inline-flex rounded-full bg-emerald-500/15 px-2 py-0.5 text-xs font-medium text-[var(--success)]"
+                : "inline-flex rounded-full bg-amber-500/15 px-2 py-0.5 text-xs font-medium text-[var(--warning)]"
+            }
+          >
+            {row.status}
+          </span>
+        ),
+      },
+    ],
+    [t],
+  );
+
+  const envOptions = React.useMemo(
+    () => [
+      {
+        value: "all",
+        label: t.showcase.envAll,
+        description: t.showcase.envAllDesc,
+      },
+      {
+        value: "production",
+        label: "Production",
+        description: t.showcase.envProdDesc,
+      },
+      {
+        value: "staging",
+        label: "Staging",
+        description: t.showcase.envStagingDesc,
+      },
+    ],
+    [t],
+  );
 
   const [envFilter, setEnvFilter] = React.useState("all");
   const [dateRange, setDateRange] = React.useState<DateRange>({
@@ -165,7 +175,7 @@ export function MiniDashboardShowcase(): React.ReactElement {
 
   const handleSaveCustomPreset = () => {
     if (customName.trim().length < 2) {
-      setNameError("Ingresa un nombre de al menos 2 caracteres.");
+      setNameError(t.showcase.presetNameError);
       return;
     }
     setNameError("");
@@ -182,7 +192,7 @@ export function MiniDashboardShowcase(): React.ReactElement {
       id: Date.now(),
       slug: resolvedSlug,
       name,
-      description: "Preset personalizado creado desde el Showcase.",
+      description: t.showcase.presetCustomDesc,
       isDefault: false,
       tokens: {
         accent: customColor,
@@ -199,14 +209,14 @@ export function MiniDashboardShowcase(): React.ReactElement {
     setCustomName("");
     toast({
       variant: "success",
-      title: `Preset "${name}" activado`,
-      description: "Guardado en localStorage y aplicado al sistema de tokens.",
+      title: `Preset "${name}" ${t.showcase.presetSavedTitle}`,
+      description: t.showcase.presetSavedDesc,
     });
   };
 
   return (
     <section
-      aria-label="Mini-Dashboard Showcase interactivo"
+      aria-label={t.showcase.ariaLabel}
       className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] p-4 shadow-xl sm:p-6"
     >
       <div className="mb-6 flex flex-wrap items-center justify-between gap-3 border-b border-[var(--border-subtle)] pb-4">
@@ -217,13 +227,13 @@ export function MiniDashboardShowcase(): React.ReactElement {
           <div>
             <p className="text-sm font-semibold">ForgeUI Live Console</p>
             <p className="text-xs text-[var(--text-muted)]">
-              Construido 100% con los 12 componentes accesibles
+              {t.showcase.subtitle}
             </p>
           </div>
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
-          <Tooltip content="Abrir CommandPalette (⌘K)" placement="bottom">
+          <Tooltip content={t.showcase.commandTooltip} placement="bottom">
             <Button
               variant="outline"
               size="sm"
@@ -241,8 +251,8 @@ export function MiniDashboardShowcase(): React.ReactElement {
             onClick={() =>
               toast({
                 variant: "info",
-                title: "Telemetría en vivo",
-                description: "Latencia global estable en 21 ms p95.",
+                title: t.showcase.toastTitle,
+                description: t.showcase.toastDesc,
               })
             }
           >
@@ -257,29 +267,29 @@ export function MiniDashboardShowcase(): React.ReactElement {
                 size="sm"
                 rightIcon={<MoreHorizontal className="h-4 w-4" />}
               >
-                Opciones
+                {t.showcase.options}
               </Button>
             }
             groups={[
               {
-                label: "Tokens",
+                label: t.showcase.tokensGroup,
                 items: [
                   {
                     id: "new-preset",
-                    label: "Crear preset personalizado",
+                    label: t.showcase.createPreset,
                     icon: <Palette className="h-4 w-4" />,
                     shortcut: "⌘P",
                     onSelect: () => setModalOpen(true),
                   },
                   {
                     id: "export",
-                    label: "Exportar CSS Tokens",
+                    label: t.showcase.exportTokens,
                     icon: <Download className="h-4 w-4" />,
                     onSelect: () =>
                       toast({
                         variant: "success",
-                        title: "Tokens exportados",
-                        description: `Preset activo: ${activePresetSlug}`,
+                        title: t.showcase.tokensExported,
+                        description: `${t.showcase.activePresetPrefix} ${activePresetSlug}`,
                       }),
                   },
                 ],
@@ -288,14 +298,14 @@ export function MiniDashboardShowcase(): React.ReactElement {
                 items: [
                   {
                     id: "reset",
-                    label: "Restablecer Forge Indigo",
+                    label: t.showcase.resetPreset,
                     icon: <Trash2 className="h-4 w-4" />,
                     variant: "destructive",
                     onSelect: () => {
                       selectPreset("forge-indigo");
                       toast({
                         variant: "warning",
-                        title: "Preset restaurado a Forge Indigo",
+                        title: t.showcase.resetToast,
                       });
                     },
                   },
@@ -309,7 +319,7 @@ export function MiniDashboardShowcase(): React.ReactElement {
             leftIcon={<Plus className="h-3.5 w-3.5" />}
             onClick={() => setModalOpen(true)}
           >
-            Nuevo Preset
+            {t.showcase.newPreset}
           </Button>
           <ThemeToggle />
         </div>
@@ -317,7 +327,7 @@ export function MiniDashboardShowcase(): React.ReactElement {
 
       <div className="mb-5 flex flex-wrap items-center gap-2">
         <span className="text-xs font-medium text-[var(--text-muted)]">
-          Presets (localStorage):
+          {t.showcase.presetsLabel}
         </span>
         {displayedPresets.map((preset) => {
           const active = preset.slug === activePresetSlug;
@@ -347,27 +357,27 @@ export function MiniDashboardShowcase(): React.ReactElement {
         items={[
           {
             id: "operations",
-            label: "Despliegues",
+            label: t.showcase.tabDeployments,
             icon: <Rocket className="h-3.5 w-3.5" />,
             content: (
               <div className="space-y-4">
                 <div className="grid gap-3 sm:grid-cols-2">
                   <Combobox
-                    label="Filtrar por entorno"
-                    options={ENV_OPTIONS}
+                    label={t.showcase.filterEnv}
+                    options={envOptions}
                     value={envFilter}
                     onValueChange={setEnvFilter}
                   />
                   <DatePicker
                     mode="range"
-                    label="Ventana de observación"
+                    label={t.showcase.dateWindow}
                     range={dateRange}
                     onRangeChange={setDateRange}
                   />
                 </div>
                 <DataTable
                   data={filteredRows}
-                  columns={DEPLOY_COLUMNS}
+                  columns={deployColumns}
                   rowKey={(r) => r.id}
                   pageSize={4}
                 />
@@ -376,7 +386,7 @@ export function MiniDashboardShowcase(): React.ReactElement {
           },
           {
             id: "architecture",
-            label: "Decisiones Técnicas",
+            label: t.showcase.tabArchitecture,
             content: (
               <Accordion
                 type="single"
@@ -384,17 +394,15 @@ export function MiniDashboardShowcase(): React.ReactElement {
                 items={[
                   {
                     id: "fouc",
-                    title: "Cero FOUC en Dark/Light Mode",
-                    subtitle: "Inline script previo a hidratación React",
-                    content:
-                      "layout.tsx inyecta un script síncrono mínimo que aplica la clase .dark antes del primer frame.",
+                    title: t.showcase.foucTitle,
+                    subtitle: t.showcase.foucSubtitle,
+                    content: t.showcase.foucContent,
                   },
                   {
                     id: "zero-dep",
-                    title: "DatePicker y Focus Trap sin dependencias pesadas",
-                    subtitle: "Control total de teclado y bundle reducido",
-                    content:
-                      "La matriz mensual 6x7 y el ciclo Tab/Shift+Tab están implementados con utilidades puras y testeadas.",
+                    title: t.showcase.zeroDepTitle,
+                    subtitle: t.showcase.zeroDepSubtitle,
+                    content: t.showcase.zeroDepContent,
                   },
                 ]}
               />
@@ -406,19 +414,19 @@ export function MiniDashboardShowcase(): React.ReactElement {
       <Modal
         open={modalOpen}
         onClose={() => setModalOpen(false)}
-        title="Guardar preset de tokens"
-        description="Se guardará en localStorage vía Zustand y se aplicará al sistema de tokens."
+        title={t.showcase.modalTitle}
+        description={t.showcase.modalDesc}
       >
         <div className="space-y-4">
           <TextField
-            label="Nombre del preset"
-            placeholder="Ej. Violet Studio"
+            label={t.showcase.presetNameLabel}
+            placeholder={t.showcase.presetNamePlaceholder}
             value={customName}
             error={nameError}
             onChange={(e) => setCustomName(e.target.value)}
           />
           <label className="flex items-center justify-between rounded-[var(--radius-ui)] border border-[var(--border-subtle)] bg-[var(--bg-canvas)] px-3 py-2 text-xs font-medium">
-            <span>Color de acento primario (--accent)</span>
+            <span>{t.showcase.accentLabel}</span>
             <input
               type="color"
               value={customColor}
@@ -429,13 +437,13 @@ export function MiniDashboardShowcase(): React.ReactElement {
         </div>
         <ModalFooter>
           <Button variant="ghost" onClick={() => setModalOpen(false)}>
-            Cancelar
+            {t.showcase.cancel}
           </Button>
           <Button
             leftIcon={<Check className="h-4 w-4" />}
             onClick={handleSaveCustomPreset}
           >
-            Guardar y aplicar
+            {t.showcase.saveAndApply}
           </Button>
         </ModalFooter>
       </Modal>

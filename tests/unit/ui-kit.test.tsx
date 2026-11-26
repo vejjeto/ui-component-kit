@@ -11,6 +11,7 @@ import {
   toISODate,
 } from "@/lib/date-utils";
 import { fuzzyFilter, fuzzyMatch } from "@/lib/fuzzy";
+import { TRANSLATIONS } from "@/lib/i18n";
 import { createProblemResponse } from "@/lib/problem-details";
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
@@ -219,5 +220,24 @@ describe("Utilities & Edge API", () => {
       "application/problem+json",
     );
     expect(problemRes.headers.get("x-request-id")).toBe("req-err-1");
+  });
+});
+
+describe("i18n dictionary parity", () => {
+  it("has identical keys and non-empty strings across es and en", () => {
+    const collectKeys = (obj: Record<string, unknown>, prefix = ""): string[] =>
+      Object.entries(obj).flatMap(([key, value]) => {
+        const path = prefix ? `${prefix}.${key}` : key;
+        if (typeof value === "object" && value !== null) {
+          return collectKeys(value as Record<string, unknown>, path);
+        }
+        expect(typeof value).toBe("string");
+        expect(String(value).trim().length).toBeGreaterThan(0);
+        return [path];
+      });
+
+    const esKeys = collectKeys(TRANSLATIONS.es).sort();
+    const enKeys = collectKeys(TRANSLATIONS.en).sort();
+    expect(esKeys).toEqual(enKeys);
   });
 });

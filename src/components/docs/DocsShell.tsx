@@ -1,10 +1,12 @@
 "use client";
 
 import { HealthBadge } from "@/components/HealthBadge";
+import { LanguageToggle } from "@/components/theme/LanguageToggle";
 import { useTheme } from "@/components/theme/ThemeProvider";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import { COMPONENT_CATALOG } from "@/lib/catalog";
 import { cn } from "@/lib/cn";
+import { useLocale } from "@/lib/i18n";
 import { Menu, Search, Sparkles, X } from "lucide-react";
 import Link from "next/link";
 import * as React from "react";
@@ -22,12 +24,13 @@ function SidebarNav({
   activeSlug?: string | undefined;
   onNavigate?: (() => void) | undefined;
 }): React.ReactElement {
+  const { t } = useLocale();
   const categories = Array.from(
     new Set(COMPONENT_CATALOG.map((c) => c.category)),
   );
 
   return (
-    <nav aria-label="Catálogo de componentes" className="flex flex-col gap-5">
+    <nav aria-label={t.docs.catalogAria} className="flex flex-col gap-5">
       <div>
         <Link
           href="/docs"
@@ -39,7 +42,7 @@ function SidebarNav({
               : "text-[var(--text-secondary)] hover:bg-[var(--bg-elevated)] hover:text-[var(--text-primary)]",
           )}
         >
-          Todos los componentes (12)
+          {t.docs.allComponents}
         </Link>
       </div>
 
@@ -85,6 +88,7 @@ export function DocsShell({
   const [drawerOpen, setDrawerOpen] = React.useState(false);
   const { setOpen: setCommandOpen } = useGlobalCommandPalette();
   const { presets, activePresetSlug, selectPreset } = useTheme();
+  const { t } = useLocale();
 
   return (
     <div className="min-h-screen bg-[var(--bg-canvas)] text-[var(--text-primary)]">
@@ -94,7 +98,7 @@ export function DocsShell({
             <button
               type="button"
               onClick={() => setDrawerOpen(true)}
-              aria-label="Abrir menú de componentes"
+              aria-label={t.docs.openMenuAria}
               className="inline-flex h-9 w-9 items-center justify-center rounded-[var(--radius-ui)] border border-[var(--border-subtle)] bg-[var(--bg-surface)] text-[var(--text-primary)] lg:hidden"
             >
               <Menu className="h-4 w-4" />
@@ -109,7 +113,7 @@ export function DocsShell({
               <span>ForgeUI</span>
             </Link>
             <span className="hidden text-xs text-[var(--text-muted)] sm:inline">
-              / Documentación Interactiva
+              {t.docs.breadcrumb}
             </span>
           </div>
 
@@ -121,14 +125,14 @@ export function DocsShell({
               className="inline-flex h-9 items-center gap-2 rounded-[var(--radius-ui)] border border-[var(--border-subtle)] bg-[var(--bg-elevated)] px-3 text-xs text-[var(--text-secondary)] transition-colors hover:text-[var(--text-primary)]"
             >
               <Search className="h-3.5 w-3.5" />
-              <span className="hidden sm:inline">Buscar...</span>
+              <span className="hidden sm:inline">{t.docs.search}</span>
               <kbd className="rounded border border-[var(--border-subtle)] bg-[var(--bg-surface)] px-1.5 py-0.5 font-mono text-[10px]">
                 ⌘K
               </kbd>
             </button>
 
             <select
-              aria-label="Preset de tema"
+              aria-label={t.docs.presetLabel}
               value={activePresetSlug}
               onChange={(e) => selectPreset(e.target.value)}
               className="hidden h-9 rounded-[var(--radius-ui)] border border-[var(--border-subtle)] bg-[var(--bg-surface)] px-2.5 text-xs font-medium text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--ring)] sm:block"
@@ -140,6 +144,7 @@ export function DocsShell({
               ))}
             </select>
 
+            <LanguageToggle />
             <ThemeToggle />
           </div>
         </div>
@@ -154,10 +159,10 @@ export function DocsShell({
           />
           <div className="relative z-10 h-full w-72 overflow-y-auto border-r border-[var(--border-subtle)] bg-[var(--bg-surface)] p-4">
             <div className="mb-4 flex items-center justify-between">
-              <span className="text-sm font-semibold">Componentes</span>
+              <span className="text-sm font-semibold">{t.docs.components}</span>
               <button
                 type="button"
-                aria-label="Cerrar menú"
+                aria-label={t.docs.closeMenuAria}
                 onClick={() => setDrawerOpen(false)}
                 className="inline-flex h-8 w-8 items-center justify-center rounded-md hover:bg-[var(--bg-elevated)]"
               >
