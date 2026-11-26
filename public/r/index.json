@@ -1,0 +1,114 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "name": "forge-ui",
+  "homepage": "http://localhost:3002",
+  "items": [
+    {
+      "name": "button",
+      "type": "registry:ui",
+      "title": "Button",
+      "description": "ForgeUI accessible Button primitive",
+      "dependencies": [
+        "class-variance-authority",
+        "lucide-react"
+      ]
+    },
+    {
+      "name": "input",
+      "type": "registry:ui",
+      "title": "Input",
+      "description": "ForgeUI accessible Input primitive",
+      "dependencies": [
+        "lucide-react"
+      ]
+    },
+    {
+      "name": "modal",
+      "type": "registry:ui",
+      "title": "Modal",
+      "description": "ForgeUI accessible Modal primitive",
+      "dependencies": [
+        "@radix-ui/react-dialog",
+        "lucide-react"
+      ]
+    },
+    {
+      "name": "dropdown-menu",
+      "type": "registry:ui",
+      "title": "DropdownMenu",
+      "description": "ForgeUI accessible DropdownMenu primitive",
+      "dependencies": [
+        "lucide-react"
+      ]
+    },
+    {
+      "name": "tabs",
+      "type": "registry:ui",
+      "title": "Tabs",
+      "description": "ForgeUI accessible Tabs primitive",
+      "dependencies": []
+    },
+    {
+      "name": "toast",
+      "type": "registry:ui",
+      "title": "Toast",
+      "description": "ForgeUI accessible Toast primitive",
+      "dependencies": [
+        "lucide-react"
+      ]
+    },
+    {
+      "name": "tooltip",
+      "type": "registry:ui",
+      "title": "Tooltip",
+      "description": "ForgeUI accessible Tooltip primitive",
+      "dependencies": []
+    },
+    {
+      "name": "accordion",
+      "type": "registry:ui",
+      "title": "Accordion",
+      "description": "ForgeUI accessible Accordion primitive",
+      "dependencies": [
+        "lucide-react"
+      ]
+    },
+    {
+      "name": "combobox",
+      "type": "registry:ui",
+      "title": "Combobox",
+      "description": "ForgeUI accessible Combobox primitive",
+      "dependencies": [
+        "lucide-react"
+      ]
+    },
+    {
+      "name": "date-picker",
+      "type": "registry:ui",
+      "title": "DatePicker",
+      "description": "ForgeUI accessible DatePicker primitive",
+      "dependencies": [
+        "lucide-react"
+      ]
+    },
+    {
+      "name": "data-table",
+      "type": "registry:ui",
+      "title": "DataTable",
+      "description": "ForgeUI accessible DataTable primitive",
+      "dependencies": [
+        "@tanstack/react-table",
+        "lucide-react"
+      ]
+    },
+    {
+      "name": "command-palette",
+      "type": "registry:ui",
+      "title": "CommandPalette",
+      "description": "ForgeUI accessible CommandPalette primitive",
+      "dependencies": [
+        "lucide-react"
+      ]
+    }
+  ]
+}

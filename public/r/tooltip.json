@@ -1,0 +1,15 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "tooltip",
+  "type": "registry:ui",
+  "title": "Tooltip",
+  "description": "ForgeUI accessible Tooltip primitive",
+  "dependencies": [],
+  "files": [
+    {
+      "path": "components/forge/Tooltip.tsx",
+      "type": "registry:ui",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { cn } from \"@/lib/cn\";\n\nexport type TooltipPlacement = \"top\" | \"bottom\" | \"left\" | \"right\";\n\nexport interface TooltipProps {\n  content: React.ReactNode;\n  placement?: TooltipPlacement;\n  delayMs?: number;\n  children: React.ReactNode;\n  className?: string;\n}\n\nconst PLACEMENT_CLASSES: Record<TooltipPlacement, string> = {\n  top: \"bottom-full left-1/2 -translate-x-1/2 mb-2\",\n  bottom: \"top-full left-1/2 -translate-x-1/2 mt-2\",\n  left: \"right-full top-1/2 -translate-y-1/2 mr-2\",\n  right: \"left-full top-1/2 -translate-y-1/2 ml-2\",\n};\n\nexport function Tooltip({\n  content,\n  placement = \"top\",\n  delayMs = 200,\n  children,\n  className,\n}: TooltipProps): React.ReactElement {\n  const [open, setOpen] = React.useState(false);\n  const timerRef = React.useRef<number | null>(null);\n  const tooltipId = React.useId();\n\n  const clearTimer = React.useCallback(() => {\n    if (timerRef.current !== null) {\n      window.clearTimeout(timerRef.current);\n      timerRef.current = null;\n    }\n  }, []);\n\n  const show = React.useCallback(() => {\n    clearTimer();\n    if (delayMs <= 0) {\n      setOpen(true);\n      return;\n    }\n    timerRef.current = window.setTimeout(() => setOpen(true), delayMs);\n  }, [clearTimer, delayMs]);\n\n  const hide = React.useCallback(() => {\n    clearTimer();\n    setOpen(false);\n  }, [clearTimer]);\n\n  React.useEffect(() => clearTimer, [clearTimer]);\n\n  return (\n    <span\n      className={cn(\"relative inline-flex\", className)}\n      onMouseEnter={show}\n      onMouseLeave={hide}\n      onFocus={show}\n      onBlur={hide}\n      onKeyDown={(e) => {\n        if (e.key === \"Escape\") hide();\n      }}\n      aria-describedby={open ? tooltipId : undefined}\n    >\n      {children}\n      {open ? (\n        <span\n          id={tooltipId}\n          role=\"tooltip\"\n          className={cn(\n            \"pointer-events-none absolute z-50 whitespace-nowrap rounded-md border border-[var(--border-subtle)] bg-[var(--text-primary)] px-2.5 py-1 text-xs font-medium text-[var(--bg-canvas)] shadow-lg\",\n            PLACEMENT_CLASSES[placement],\n          )}\n        >\n          {content}\n        </span>\n      ) : null}\n    </span>\n  );\n}\n"
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "button",
+  "type": "registry:ui",
+  "title": "Button",
+  "description": "ForgeUI accessible Button primitive",
+  "dependencies": [
+    "class-variance-authority",
+    "lucide-react"
+  ],
+  "files": [
+    {
+      "path": "components/forge/Button.tsx",
+      "type": "registry:ui",
+      "content": "\"use client\";\n\nimport * as React from \"react\";\nimport { cva, type VariantProps } from \"class-variance-authority\";\nimport { Loader2 } from \"lucide-react\";\nimport { cn } from \"@/lib/cn\";\nimport { Slot } from \"@/lib/slot\";\n\nexport const buttonVariants = cva(\n  \"inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-[var(--radius-ui)] font-medium transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-canvas)] disabled:pointer-events-none disabled:opacity-50 select-none active:scale-[0.98]\",\n  {\n    variants: {\n      variant: {\n        primary:\n          \"bg-[var(--accent)] text-[var(--accent-fg)] shadow-sm hover:bg-[var(--accent-hover)]\",\n        secondary:\n          \"bg-[var(--bg-elevated)] text-[var(--text-primary)] hover:bg-[var(--border-subtle)]\",\n        outline:\n          \"border border-[var(--border-subtle)] bg-[var(--bg-surface)] text-[var(--text-primary)] hover:bg-[var(--bg-elevated)]\",\n        ghost:\n          \"bg-transparent text-[var(--text-secondary)] hover:bg-[var(--bg-elevated)] hover:text-[var(--text-primary)]\",\n        danger:\n          \"bg-[var(--danger)] text-white shadow-sm hover:opacity-90\",\n      },\n      size: {\n        sm: \"h-8 px-3 text-xs\",\n        md: \"h-9 px-4 text-sm\",\n        lg: \"h-11 px-5 text-base\",\n        icon: \"h-9 w-9 p-0\",\n      },\n    },\n    defaultVariants: {\n      variant: \"primary\",\n      size: \"md\",\n    },\n  },\n);\n\nexport interface ButtonProps\n  extends React.ButtonHTMLAttributes<HTMLButtonElement>,\n    VariantProps<typeof buttonVariants> {\n  asChild?: boolean;\n  loading?: boolean;\n  leftIcon?: React.ReactNode;\n  rightIcon?: React.ReactNode;\n}\n\nexport const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(\n  function Button(\n    {\n      className,\n      variant,\n      size,\n      asChild = false,\n      loading = false,\n      disabled,\n      leftIcon,\n      rightIcon,\n      children,\n      type = \"button\",\n      ...props\n    },\n    ref,\n  ) {\n    const classes = cn(buttonVariants({ variant, size }), className);\n    const isDisabled = Boolean(disabled || loading);\n\n    if (asChild) {\n      return (\n        <Slot ref={ref as React.Ref<HTMLElement>} className={classes} {...props}>\n          {children}\n        </Slot>\n      );\n    }\n\n    return (\n      <button\n        ref={ref}\n        type={type}\n        disabled={isDisabled}\n        aria-busy={loading || undefined}\n        className={classes}\n        {...props}\n      >\n        {loading ? (\n          <Loader2 className=\"h-4 w-4 animate-spin\" aria-hidden=\"true\" />\n        ) : leftIcon ? (\n          <span className=\"inline-flex shrink-0\" aria-hidden=\"true\">\n            {leftIcon}\n          </span>\n        ) : null}\n        {children}\n        {!loading && rightIcon ? (\n          <span className=\"inline-flex shrink-0\" aria-hidden=\"true\">\n            {rightIcon}\n          </span>\n        ) : null}\n      </button>\n    );\n  },\n);\n"
+    }
+  ]
+}
