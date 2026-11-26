@@ -1,6 +1,10 @@
 # ForgeUI — `ui-component-kit`
 
-100% static/edge React 19 + Next.js 15 design system with 12 WAI-ARIA accessible primitives, zero-FOUC CSS tokens, TanStack Table v8, interactive WCAG 2.1 contrast checker, and a Shadcn Registry (`/r/*.json`).
+Sistema de diseño 100% estático/edge en React 19 + Next.js 15 con 12 primitivos accesibles WAI-ARIA, tokens CSS sin FOUC, TanStack Table v8, verificador interactivo de contraste WCAG 2.1 y registro compatible con Shadcn (`/r/*.json`).
+
+## Qué hace este proyecto
+
+**ForgeUI** es una librería y catálogo interactivo de 12 componentes de interfaz listos para usar y accesibles por teclado (botones, modales, pestañas, tablas con filtros y ordenamiento, paleta de comandos `⌘K`, selector de fechas, etc.). Incluye un playground en vivo para probar propiedades, copiar el código TSX generado, verificar contraste de colores WCAG 2.1 e instalar cada componente directamente con la CLI de `shadcn`.
 
 ## 1. Arquitectura & Stack
 - **Framework**: Next.js 15 (App Router, React Compiler `reactCompiler: true`) + React 19 + TypeScript (`strict`, `noUncheckedIndexedAccess`, `exactOptionalPropertyTypes`).
